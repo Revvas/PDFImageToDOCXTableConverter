@@ -5,8 +5,8 @@ pip install python-docx Pillow PyMuPDF
 #######################
 ##############
 
-# PATH_TO_FOLDER_WITH_PDFS = '/home/user/Documents/SCE_BASE/0_kurs_3_sem/Security_HW/Examen/Lectures'
-PATH_TO_FOLDER_WITH_PDFS = '/home/user/Documents/SCE_BASE/0_kurs_3_sem/Security_HW/Examen/ex_plus_answer'
+PATH_TO_FOLDER_WITH_PDFS = '/home/user/Documents/SCE_BASE/0_kurs_3_sem/Security_HW/Examen/Lectures'
+# PATH_TO_FOLDER_WITH_PDFS = '/home/user/Documents/SCE_BASE/0_kurs_3_sem/Security_HW/Examen/ex_plus_answer'
 
 ##############
 #######################
@@ -19,6 +19,25 @@ from PIL import Image
 import shutil
 
 import fitz  # PyMuPDF
+
+import re
+
+def tryint(s):
+    try:
+        return int(s)
+    except:
+        return s
+
+def alphanum_key(s):
+    """ Turn a string into a list of string and number chunks.
+        "z23a" -> ["z", 23, "a"]
+    """
+    return [ tryint(c) for c in re.split('([0-9]+)', s) ]
+
+def sort_nicely(l):
+    """ Sort the given list in the way that humans expect.
+    """
+    l.sort(key=alphanum_key)
 
 def set_margins_to_zero(doc):
     for section in doc.sections:
@@ -47,7 +66,8 @@ def create_image_table(doc, image_folder):
     image_files = [f for f in os.listdir(image_folder) if f.endswith(('.jpg', '.jpeg', '.png', '.gif', '.bmp'))]
 
     # Sort the image files by name
-    image_files.sort()
+    # image_files.sort()
+    sort_nicely(image_files)
 
 
     # Calculate the available width for the table
@@ -119,7 +139,8 @@ def extract_pdf_pages_as_images(pdf_file, output_folder):
 
 def shrink_lecture_folder(folder):
     pdf_files = [f for f in os.listdir(folder) if f.endswith(('.pdf', ".PDF"))]
-    pdf_files.sort()
+    # pdf_files.sort()
+    sort_nicely(pdf_files)
     print("pdf_files", pdf_files)
 
     folder_name = os.path.split(folder)[1]
